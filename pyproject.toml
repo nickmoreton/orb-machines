@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "orbmachines"
+name = "machines"
 version = "0.1.0"
 description = ""
 authors = ["Nick Moreton <nick.moreton@torchbox.com>"]
@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 click = "^8.1.7"
 rich = "^13.7.1"
+halo = "^0.0.31"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -18,7 +19,7 @@ flake8 = "^7.0.0"
 isort = "^5.13.2"
 
 [tool.poetry.scripts]
-orber = "orbmachines.main:cli"
+m = "machines.main:cli"
 
 [build-system]
 requires = ["poetry-core"]
