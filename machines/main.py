@@ -16,6 +16,7 @@ def cli(ctx):
 @cli.command()
 @click.pass_obj
 def build(registry):
+    """Build a machine of a specific distro, version, and architecture."""
     # name
     click.echo()
     name = click.prompt("Enter a machine name")
@@ -72,18 +73,25 @@ def build(registry):
 
 @cli.command()
 def distros():
+    """List all available distros."""
     click.echo(distro_list())
 
 
 @cli.command()
 @click.pass_obj
 def destroy(registry):
+    """Destroy a machine."""
     if not registry.machines:
         click.echo("No machines to destroy")
         return
 
     machine_list(registry.machines, with_keys=True)
     index = click.prompt("Enter the index of the machine to delete")
+
+    if index not in [str(i) for i in range(1, len(registry.machines) + 1)]:
+        click.echo("Invalid index")
+        return
+
     registry.destroy_machine(registry.machines[int(index) - 1].name)
 
     machine_list(registry.machines)
@@ -92,6 +100,7 @@ def destroy(registry):
 @cli.command()
 @click.pass_obj
 def list(registry):
+    """List all machines."""
     machine_list(registry.machines)
 
 
@@ -99,6 +108,7 @@ def list(registry):
 @click.option("-a", "--all", is_flag=True)
 @click.pass_obj
 def stop(registry, all):
+    """Stop a machine."""
     if not registry.machines:
         click.echo("No machines to stop")
         return
@@ -117,6 +127,7 @@ def stop(registry, all):
 @click.option("-a", "--all", is_flag=True)
 @click.pass_obj
 def start(registry, all):
+    """Start a machine."""
     if not registry.machines:
         click.echo("No machines to start")
         return
