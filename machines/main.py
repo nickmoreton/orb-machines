@@ -4,12 +4,11 @@ from machines.helpers import distributions, distro_default_version
 from machines.models import MachineRegistry
 from machines.views import architecture_list, distro_list, machine_list
 
-DEFAULT_DISTRO = "ubuntu"
-
 
 @click.group()
 @click.pass_context
 def cli(ctx):
+    """Manage OrbStack machines. A wrapper around the OrbStack client."""
     ctx.obj = MachineRegistry()
 
 
