@@ -14,8 +14,8 @@ def cli(ctx):
 
 @cli.command()
 @click.pass_obj
-def build(registry):
-    """Build a machine of a specific distro, version, and architecture."""
+def create(registry):
+    """Create a machine using a distro, version, and architecture."""
     # name
     click.echo()
     name = click.prompt("Enter a machine name")
@@ -139,3 +139,20 @@ def start(registry, all):
         registry.start_machine(registry.machines[int(index) - 1].name)
 
     machine_list(registry.machines)
+
+
+@cli.command()
+@click.pass_obj
+def init(registry):
+    """Initialise a machine after creating it."""
+
+    if not registry.machines:
+        click.echo("No machines to initialise")
+        return
+
+    machine_list(registry.machines, with_keys=True)
+    index = click.prompt("Enter the index of the machine to initialise")
+
+    if index not in [str(i) for i in range(1, len(registry.machines) + 1)]:
+        click.echo("Invalid index")
+        return
