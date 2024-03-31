@@ -1,6 +1,8 @@
 import json
+import pprint
 import subprocess
 from dataclasses import dataclass, field
+from importlib import import_module
 
 from halo import Halo
 
@@ -16,6 +18,25 @@ class MachineModel:
     arch: str
     state: str
     id: str
+
+    upgrade: str = None
+    initialise: str = None
+    install: str = None
+    configure: str = None
+
+    def __post_init__(self):
+        module = import_module(f"initialisers.{self.distro}")
+        if hasattr(module, "Upgrade") and hasattr(module.Upgrade, "command"):
+            m = module.Upgrade()
+            self.upgrade = m.get_command()
+        if hasattr(module, "Initialise") and hasattr(module.Initialise, "command"):
+            self.initialise = module.Initialise().command
+        if hasattr(module, "Install") and hasattr(module.Install, "command"):
+            self.install = module.Install().command
+        if hasattr(module, "Configure") and hasattr(module.Configure, "command"):
+            self.configure = module.Configure().command
+
+        pprint.pprint(self.upgrade)
 
 
 @dataclass

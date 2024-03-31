@@ -141,18 +141,18 @@ def start(registry, all):
     machine_list(registry.machines)
 
 
-@cli.command()
-@click.pass_obj
-def init(registry):
-    """Initialise a machine after creating it."""
+# @cli.command()
+# @click.pass_obj
+# def init(registry):
+#     """Initialise a machine after creating it."""
 
-    if not registry.machines:
-        click.echo("No machines to initialise")
-        return
+#     if not registry.machines:
+#         click.echo("No machines to initialise")
+#         return
 
-    machine_list(registry.machines, with_keys=True)
-    index = click.prompt("Enter the index of the machine to initialise")
+#     machine_list(registry.machines, with_keys=True)
+#     index = click.prompt("Enter the index of the machine to initialise")
 
-    if index not in [str(i) for i in range(1, len(registry.machines) + 1)]:
-        click.echo("Invalid index")
-        return
+#     if index not in [str(i) for i in range(1, len(registry.machines) + 1)]:
+#         click.echo("Invalid index")
+#         return

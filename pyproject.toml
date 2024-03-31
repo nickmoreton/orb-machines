@@ -10,6 +10,7 @@ python = "^3.12"
 click = "^8.1.7"
 rich = "^13.7.1"
 halo = "^0.0.31"
+pyyaml = "^6.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
