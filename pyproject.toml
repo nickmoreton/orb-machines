@@ -20,6 +20,7 @@ isort = "^5.13.2"
 
 [tool.poetry.scripts]
 m = "machines.main:cli"
+s = "stacks.main:cli"
 
 [build-system]
 requires = ["poetry-core"]
