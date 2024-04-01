@@ -1,78 +1,22 @@
-class Upgrade:
-
-    distro = "ubuntu"
-
-    sudo = True
-    accept = True
-    command_start = "sudo apt" if sudo else "apt"
-
-    def __init__(self):
-        self.command = f"{self.command_start} update && {self.command_start} upgrade -y"
-
-    def get_command(self):
-        return self.command
+from initialisers.base import (
+    BaseConfigureCommand,
+    BaseInitialiseCommand,
+    BaseInstallCommand,
+    BaseUpgradeCommand,
+)
 
 
-class Initialise:
-
-    distro = "ubuntu"
-
-    packages = [
-        "git",
-        "wget",
-        "curl",
-        "nano",
-    ]
-
-    sudo = True
-    accept = True
-    command_start = "sudo apt" if sudo else "apt"
-
-    def __init__(self):
-        # start of command
-        cmd = f"{self.command_start} install -y"
-        # add packages
-        for package in self.packages:
-            cmd += f" {package}"
-        self.command = cmd
+class Upgrade(BaseUpgradeCommand):
+    pass
 
 
-class Install:
-
-    distro = "ubuntu"
-
-    packages = {
-        "docker": [
-            "docker-ce",
-            "docker-ce-cli",
-            "containerd.io",
-            "docker-buildx-plugin",
-            "docker-compose-plugin",
-        ]
-    }
-
-    sudo = True
-    accept = True
-    command_start = "sudo apt" if sudo else "apt"
-
-    def __init__(self):
-        # start of command
-        cmd = f"{self.command_start} install -y"
-        # add packages
-        for package in self.packages["docker"]:
-            cmd += f" {package}"
-        self.command = cmd
+class Initialise(BaseInitialiseCommand):
+    packages = ["curl", "git", "htop", "nano", "wget"]
 
 
-class Configure:
+class Install(BaseInstallCommand):
+    packages = ["python3", "python3-pip", "python3-venv"]
 
-    distro = "ubuntu"
 
-    sudo = True
-    accept = True
-    command_start = "sudo apt" if sudo else "apt"
-
-    def __init__(self):
-        self.command = (
-            f"{self.command_start} autoremove -y && {self.command_start} autoclean"
-        )
+class Configure(BaseConfigureCommand):
+    pass

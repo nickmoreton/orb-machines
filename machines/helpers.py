@@ -38,7 +38,7 @@ def distributions():
         "alma": ["8", "9"],
         "alpine": ["3.16", "3.17", "3.18", "3.19"],
         "arch": [],
-        "centos": ["8", "9"],
+        "centos": ["8-Stream", "9-Stream"],
         "debian": ["buster", "bullseye", "bookworm"],
         "devuan": ["beowulf", "chimaera", "daedalus"],
         "fedora": ["38", "39"],
@@ -78,6 +78,21 @@ def distro_default_version(distro):
         return None
 
 
-# def architecture_versions():
-#     data = ["arm64", "amd64"]
-#     return data
+def upgrade_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_upgrade()
+
+
+def initialise_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_initialise()
+
+
+def install_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_install()
+
+
+def configure_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_configure()
