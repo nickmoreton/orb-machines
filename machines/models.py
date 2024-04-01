@@ -1,6 +1,7 @@
 import json
 import subprocess
 from dataclasses import dataclass, field
+from importlib import import_module
 
 from halo import Halo
 
@@ -16,6 +17,37 @@ class MachineModel:
     arch: str
     state: str
     id: str
+
+    upgrade: str = None
+    initialise: str = None
+    install: str = None
+    configure: str = None
+
+    def __post_init__(self):
+        try:
+            module = import_module(f"initialisers.{self.distro}")
+            if hasattr(module, "Upgrade"):
+                self.upgrade = module.Upgrade().command
+            if hasattr(module, "Initialise"):
+                self.initialise = module.Initialise().command
+            if hasattr(module, "Install"):
+                self.install = module.Install().command
+            if hasattr(module, "Configure"):
+                self.configure = module.Configure().command
+        except ModuleNotFoundError:
+            print(f"No initialiser found for {self.distro}")
+
+    def run_upgrade(self):
+        subprocess.run(f"orbctl run -m {self.name} -s '{self.upgrade}'", shell=True)
+
+    def run_initialise(self):
+        subprocess.run(f"orbctl run -m {self.name} -s '{self.initialise}'", shell=True)
+
+    def run_install(self):
+        subprocess.run(f"orbctl run -m {self.name} -s '{self.install}'", shell=True)
+
+    def run_configure(self):
+        subprocess.run(f"orbctl run -m {self.name} -s '{self.configure}'", shell=True)
 
 
 @dataclass
@@ -100,20 +132,20 @@ class MachineRegistry:
             # creation
             if version:
                 subprocess.run(
-                    f"orb create {distro}:{version} {name} -a {arch}",
+                    f"orb create -a {arch} {distro}:{version} {name}",
                     shell=True,
                     capture_output=True,
                 )
             else:
                 subprocess.run(
-                    f"orb create {distro} {name} -a {arch}",
+                    f"orb create -a {arch} {distro} {name}",
                     shell=True,
                     capture_output=True,
                 )
             spinner.stop()
             # registration
             info = subprocess.run(
-                f"orb info {name} --format json",
+                f"orb info -f json {name}",
                 shell=True,
                 capture_output=True,
             )
@@ -124,9 +156,40 @@ class MachineRegistry:
         spinner = Halo(text="Destroying machine", spinner="dots")
         spinner.start()
         subprocess.run(
-            f"orb delete {name} --force",
+            f"orb delete -f {name}",
             shell=True,
             capture_output=True,
         )
         spinner.stop()
         self._unregister_machine(name)
+
+    def upgrade_machine(self, name):
+        machine = self.get_machine(name)
+        machine.run_upgrade()
+
+    def initialise_machine(self, name):
+        machine = self.get_machine(name)
+        machine.run_initialise()
+
+    def install_machine(self, name):
+        machine = self.get_machine(name)
+        machine.run_install()
+
+    def configure_machine(self, name):
+        machine = self.get_machine(name)
+        machine.run_configure()
+
+    def open_shell(self, name):
+        subprocess.run(f"ssh {name}@orb", shell=True)
+
+    def rename_machine(self, name, new_name):
+        spinner = Halo(text="Renaming machine", spinner="dots")
+        spinner.start()
+        subprocess.run(
+            f"orb rename {name} {new_name}",
+            shell=True,
+            capture_output=True,
+        )
+        spinner.stop()
+        self._update_status(new_name)
+        # self._unregister_machine(name)

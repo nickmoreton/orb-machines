@@ -36,17 +36,17 @@ def parse_info(info, key=None):
 def distributions():
     data = {
         "alma": ["8", "9"],
-        "alpine": ["3.16", "3.17", "3.18", "3.19", "edge"],
+        "alpine": ["3.16", "3.17", "3.18", "3.19"],
         "arch": [],
-        "centos": ["8", "9"],
-        "debian": ["buster", "bullseye", "bookworm", "trixie", "sid"],
+        "centos": ["8-Stream", "9-Stream"],
+        "debian": ["buster", "bullseye", "bookworm"],
         "devuan": ["beowulf", "chimaera", "daedalus"],
         "fedora": ["38", "39"],
         "gentoo": [],
         "kali": [],
         "nixos": ["23.11"],
         "openeuler": ["20.03", "22.03", "23.09"],
-        "opensuse": ["15.4", "15.5", "tumbleweed"],
+        "opensuse": ["15.4", "15.5"],
         "oracle": ["8", "9"],
         "rocky": ["8", "9"],
         "ubuntu": ["bionic", "focal", "jammy", "lunar", "mantic"],
@@ -78,6 +78,21 @@ def distro_default_version(distro):
         return None
 
 
-# def architecture_versions():
-#     data = ["arm64", "amd64"]
-#     return data
+def upgrade_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_upgrade()
+
+
+def initialise_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_initialise()
+
+
+def install_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_install()
+
+
+def configure_machine(registry, name):
+    machine = registry.get_machine(name)
+    machine.run_configure()
